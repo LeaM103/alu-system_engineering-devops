@@ -1,4 +1,8 @@
 # Configuring ssh client so that I can connect to the server without typing a password.
-Host 52.87.227.106
-    IdentityFile ~/.ssh/mykey
+# SSH client configuration for passwordless login
+Host myserver
+    HostName 52.87.227.106
+    User ubuntu
+    IdentityFile ~/.ssh/school
     PasswordAuthentication no
+

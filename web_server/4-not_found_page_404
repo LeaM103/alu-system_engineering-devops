@@ -1,18 +1,20 @@
 #!/usr/bin/env bash
 #Configures Nginx server to have a custom 404 page that contains the string
 
+# Update package lists non-interactively
 sudo apt-get update
+
+# Install Nginx web srver non-interactively
 sudo apt-get -y install nginx
 sudo ufw allow 'Nginx HTTP'
-echo "This is Lea from Holberton School :)" | sudo tee /var/www/html/index.html > /dev/null
 
-# codes to redirect a specific endpoint (eg: redirect /redirect_me to https://www.github.com/twizelissa)
-string_for_replacement="server_name _;\n\trewrite ^\/redirect_me https:\/\/www.github.com\/LeaM103 permanent;"
-sudo sed -i "s/server_name _;/$string_for_replacement/" /etc/nginx/sites-enabled/default
+echo "Holberton School for the win!" | sudo tee /var/www/html/index.html > /dev/null
 
-# codes to create error page and add a redirect for error 404
-echo "Ceci n'est pas une page" | sudo tee /var/www/html/404.html > /dev/null
-string_for_replacement="listen 80 default_server;\n\terror_page 404 \/404.html;\n\tlocation = \/404.html {\n\t\troot \/var\/www\/html;\n\t\tinternal;\n\t}"
-sudo sed -i "s/listen 80 default_server;/$string_for_replacement/" /etc/nginx/sites-enabled/default
+# Create custom 404 page
+echo "Ceci n'est pas une page" | sudo tee /var/www/html/custom_404.html > /dev/null
 
-sudo service nginx restart
+# Insert redirect and 404 config into Nginx
+sudo sed -i '/server_name _;/a \\n\tlocation /redirect_me {\n\t\treturn 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;\n\t}\n\terror_page 404 /custom_404.html;\n\tlocation = /custom_404.html {\n\t\tinternal;\n\t}' /etc/nginx/sites-available/default
+
+# Validate and restart Nginx
+sudo nginx -t && sudo service nginx restart
